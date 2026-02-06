@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Full Pipeline
 
 on:
   push:
@@ -7,23 +7,32 @@ on:
     branches: [develop]
 
 jobs:
-  build-and-test:
+  build-test-lint:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
-
+      # 3️⃣ Upgrade pip dan install dependencies
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run tests
-        run: python -m pytest -v
+      # 4️⃣ Run tests dengan coverage
+      - name: Run tests with coverage
+        run: |
+          python -m pytest --cov=backend --cov-report=term-missing -v
+
+      # 5️⃣ Lint code dengan flake8
+      - name: Lint with flake8
+        run: |
+          flake8 backend tests --count --select=E9,F63,F7,F82 --show-source --statistics
