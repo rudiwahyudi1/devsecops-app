@@ -1,4 +1,5 @@
 fastapi
 uvicorn
 pytest
-httpx       # <-- tambahkan ini
+httpx
+flake8
